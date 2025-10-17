@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sales Summary cHJvZHVjdCxwcmljZSxzYWxlcwpBcHBsZSwxLjIwLDMw</title>
+  <!-- Bootstrap CSS with fallback for non-loading case -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" onerror="fallbackCSS()">
+  <style>
+    /* Fallback CSS if Bootstrap fails to load */
+    .container { padding: 2rem; font-family: Arial, sans-serif; }
+    .card { border: 1px solid #ccc; border-radius: 0.25rem; padding: 1rem; }
+    #total-sales { font-size: 2rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="mb-4">Sales Summary</h1>
+    <div class="card">
+      <div class="card-body">
+        <p>Total Sales: <span id="total-sales">0</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Function to load fallback CSS if Bootstrap fails
+    function fallbackCSS() {
+      document.querySelector('style').innerHTML = `
+        .container { padding: 2rem; font-family: Arial, sans-serif; }
+        .card { border: 1px solid #ccc; border-radius: 0.25rem; padding: 1rem; }
+        #total-sales { font-size: 2rem; font-weight: bold; }
+      `;
+    }
+
+    // Core logic inside script tag
+    (function() {
+      const seed = "cHJvZHVjdCxwcmljZSxzYWxlcwpBcHBsZSwxLjIwLDMw";
+      const expectedResult = 30*1.20 + 40*1.45; // 36 + 58 = 94
+
+      // Set document title
+      document.title = `Sales Summary ${seed}`;
+
+      // Verify bootstrap CSS is loaded
+      const bootstrapLink = document.querySelector("link[href*='bootstrap']");
+      if (!bootstrapLink) {
+        console.error("Bootstrap CSS not loaded");
+      }
+
+      // Parse CSV data from attachments
+      const csvData = `product,price,sales
+Apple,1.20,30
+Orange,1.45,40`;
+
+      // Function to parse CSV
+      function parseCSV(csv) {
+        const lines = csv.trim().split('\n');
+        const headers = lines[0].split(',');
+        const data = lines.slice(1).map(line => {
+          const cols = line.split(',');
+          const obj = {};
+          headers.forEach((h, i) => { obj[h.trim()] = cols[i].trim(); });
+          return obj;
+        });
+        return data;
+      }
+
+      // Calculate total sales
+      const data = parseCSV(csvData);
+      const total = data.reduce((sum, item) => {
+        const price = parseFloat(item.price);
+        const sales = parseInt(item.sales, 10);
+        return sum + price * sales;
+      }, 0);
+
+      // Set total inside #total-sales
+      const totalElem = document.querySelector('#total-sales');
+      totalElem.textContent = total.toFixed(2);
+
+      // Check conditions
+      if (document.title !== `Sales Summary ${seed}`) {
+        console.error('Document title does not match expected');
+      }
+      if (!document.querySelector("link[href*='bootstrap']")) {
+        console.error('Bootstrap link element missing');
+      }
+      const displayedTotal = parseFloat(document.querySelector("#total-sales").textContent);
+      if (Math.abs(displayedTotal - expectedResult) >= 0.01) {
+        console.error('Total sales value does not match expected result');
+      }
+    })();
+  </script>
+</body>
+</html>
